@@ -1,0 +1,12 @@
+GCM Writeup
+++++++++++++++++++++++++++++++++++++++
+Advantage of GCM
+* Provides encryption and a message authentification mechanism at the time
+* It seems to be CCA secure ( see https://eprint.iacr.org/2004/193.pdf) (which is not the case of CTR mode, see previous exercise)
+* GCM authentification is secure
+* As CTR it can be parallelized and obtaining the authentification can be done effectively
+using Galois field multiplication. Speed gains can be obtained over CTR + HMAC done sequentially.
+
+Disadvantage of GCM
+* The authentification in GCM uses a 128-bit key, while HMAC uses a 256-bit key. Therefore, it should be
+that the security of the authentification part is weaker for GCM than HMAC.

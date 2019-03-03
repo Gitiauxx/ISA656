@@ -1,0 +1,13 @@
+CBC_writeup
+++++++++++++++++++++
+
+Denote c the cyphertext received when submitting m="turn to page 01"
+Choose m0=m XOR 1 and m1=0. The cyphertext sends back by the challenger will be 
+    -   If the adversary receives a cyhertext c'= c, he returns b=0 because 
+            f(IV2 XOR m0) = f(IV1 XOR 1 XOR m XOR 1) = f(IV1 XOR m) = c;
+    - Otherwise, the adversary returns b=1.
+
+With probability 1, the adversary will distinguish between m0 and m1.
+
+
+

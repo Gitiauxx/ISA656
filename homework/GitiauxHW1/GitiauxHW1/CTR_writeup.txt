@@ -1,0 +1,14 @@
+CTR_writeup
++++++++++++++++++++++++++++++++
+The adversary will first m0 = 00 and m1= 11. 
+Given the cyphertext (ctr,c) he will receive back, he will create a 
+cyphertext (ctr, c XOR 11).
+    - If the decrypted message m' = m0, then the adversary returns b=1;
+    - Otherwise, he returns b=0.
+
+The adversary will win with probability 1 because 
+c' will be decrypted as f^(-1)(ctr) XOR c' = f^(-1)(ctr) XOR c XOR 11
+                                           = m_b XOR 11
+                                           = 00 of b=1 or =11 if b=0
+
+                                           

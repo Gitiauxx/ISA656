@@ -1,0 +1,6 @@
+First, install necessary boost components:
+
+  sudo apt-get install libboost-system-dev libboost-program-options-dev libboost-filesystem-dev
+
+Then, run make.
+

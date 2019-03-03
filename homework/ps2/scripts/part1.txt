@@ -1,0 +1,13 @@
+part1.txt
+-------------------------------------
+(1) The hash of ms = m||padding||x is e1ca9db8eae1b8cbfacc63de828af6d0 and is the same whether we use directly md5(ms) or 
+h.md5(state=md5(m)) and h.update()
+
+(2) The length extension attack is possible because the updated internal state s(i+1) = f(s(i), b(i+1)), where f is the compression function. 
+When hashing message m with n block of size 512, the result h=H(m + padding) is the nth internal state. By using s(n+1)=h, I can obtain a 
+valid hash of a new block b(n+1) as f(h, b(n+1)) and update the internal state to s(n+2)= f(h, b(n+1)). I can repeat the same procedure 
+for blocks b(n+2), ... It works because if an attacker knows the length of the hashed message, she can compute a valid padding.
+
+(3) An example where the length extension is an issue is if a bank has MAC-authentificated a message m="transfer to Xavier $100" with md5. If I intercept
+the message and replace it by ms= m||padding||00000  along with the MAC hs computed as in (1), this message will verify (since hs is a valid hash
+of ms). 

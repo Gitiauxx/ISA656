@@ -1,0 +1,4 @@
+websites:
+# https://github.com/: TLS_AES_128_GCM_SHA256
+# https://mymasonportal.gmu.edu/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_66_1: TLS_ECDHE_RCA_WITH_AES_128_GCM_SHA256, TLS 1.2
+# https://www.nytimes.com/: TLS_ECDHE_RCA_WITH_AES_128_GCM_SHA256, TLS 1.2, 128 bit keys

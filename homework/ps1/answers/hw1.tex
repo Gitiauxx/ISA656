@@ -46,38 +46,138 @@
 \pgfplotsset{compat=1.15}
 
 \newtheorem{defn}{Definition}[section]
-\title{Homework 1}
+\title{Homework 1 - Xavier Gitiaux}
 \author{}
-\date{January 2019}
+\date{February 2019}
 
 \begin{document}
 \maketitle
 
+\section{Exercise 1}
+Done!
+
+\section{Exercise 2}
+
+\subsection{}
+Denote $c=c_{1}c_{2}c_{3}c_{4}$ the cyphertext. The adversary compute $k= a - c_{1} \% 26$. If $c_{2} - k = b\%26$, it concludes that the password was "abcd"; otherwise, he concludes that the password was "kdmf". 
+
+\subsection{}
+Denote $c=c_{1}c_{2}c_{3}c_{4}$ the cyphertext. The adversary compute $k= a - c_{1} \% 26$. If $c_{3} - k = c\%26$, it concludes that the password was "abcd"; otherwise, he concludes that the password was "kdmf". 
+
+\subsection{}
+Denote $c=c_{1}c_{2}c_{3}c_{4}$ the cyphertext. The adversary compute $k= a - c_{1} \% 26$. If $c_{4} - k = d\%26$, it concludes that the password was "abcd"; otherwise, he concludes that the password was "kdmf". 
+
+\subsection{}
+If the key length is equal to the message length, perfect security is achieved: an adversary cannot distinguish the two passwords (i.e., cannot do better than flipping a coin to distinguish "abcd" and "kdmf"). 
 
 \section{Exercise 3}
 
 \subsection{}
-Plaintexts and cyphertexts are of size $n$. 
+Plaintexts and cyphertexts are of size $n$ bits. 
 
 \subsection{}
-Given a pair $(m, c)$, the brute force attack consists in searching the $2^{l}\times 2^{l}$ key space for the pair of keys $(k_{1}, k_{2})$ such that $Enc_{k_{1}, k_{2}}(m) = c$.
+Given a pair $(m, c)$, the brute force attack consists in searching the $2^{l}\times 2^{l}$ key space for the pair of keys $(k_{1}, k_{2})$ such that $Enc_{k_{1}, k_{2}}(m) = c$. For each $k_{1}$, the intermediate encrypted value $En_{k_{1}}(m)$ is stored in the $n-$bit available memory $s$, which is then accessed to encrypt with key $k_{2}$. In the worst-case, the total number of loops is $2^{2l}$ and each loop requires $2$ encryptions, so a $O\left( n2^{2l}\right)$ running time if each of the $2 \times 2^{2l}$ encryptions takes $O\left(n\right)$ time. 
+
+\begin{algorithm}[h!]
+\caption{Exercise 3: Brute-Force Attack - Question 2}
+\begin{algorithmic}[1]
+\State \textbf{Input:}  $m$, $n$, a $n-$bit storage $s$, $\{E_{k}(.)\}_{k\in \{0,1\}^{l}}$, $\{D_{k}(.)\}_{k\in \{0,1\}^{l}}$
+ 
+
+ \For  {i=1..l}
+ \For {j=1..l}
+ \State$s \gets E_{k[i]}(m)$
+ \State $s \gets E_{k[j]}(s)$
+ \If {$s==c$}
+ \State{\bfseries return} $k[i], k[j]$.
+ \EndIf
+\EndFor
+\EndFor
+  
+
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{}
 Given a pair $(m, c)$, an attack can use the $n 2^{l}$ memory space in the following way:
 \begin{itemize}
-\item For each key $k_{1}$ in the $2^{l}$ key space, encrypt the plaintext $m$ and store $Enc_{k_{1}}(m)$ along with the key $k_{1}$ in memory.  
-\item For each key $k_{2}$ in the $2^{l}$ key space, decrypt the cyphertext $c$ using $Dec_{k_{2}}(c)$ and look for a match in the memory space.
-\item If a match is found, return the corresponding $k_{1}$ and $k_{2}$. 
-\end{itemize} 
-
-\subsection{}
-Given a pair $(m, c)$, an attack can use the $n 2^{l}$ memory space in the following way:
-\begin{itemize}
-\item For half of the keys $k_{1}$ in the $2^{l}$ key space, encrypt the plaintext $m$ and store $Enc_{k_{1}}(m)$ along with the key $k_{1}$ in memory.  
-\item For half of the keys $k_{3}$ in the $2^{l}$ key space, decrypt the cyphertext $c$ and store $Dec_{k_{3}}(c)$ along with the key $k_{3}$ in memory. 
-
+\item For each key $k_{1}$ in the $2^{l}$ key space, encrypt the plaintext $m$ and store $Enc_{k_{1}}(m)$ along with the key $k_{1}$ in memory (assuming that storing a key is memory free) for example in a hash table.  
 \item For each key $k_{2}$ in the $2^{l}$ key space, decrypt the cyphertext $c$ using $Dec_{k_{2}}(c)$ and look for a match in the memory space.
 \item If a match is found, return the corresponding $k_{1}$ and $k_{2}$. 
 \end{itemize}
+
+The first loop takes $2^{l}$ encryptions, each at a cost $O(n)$. The second loop takes at most $2^{l}$ decryptions, each at a cost $O(n)$. Therefore the total running time is $O(n2^{l})$. 
+
+\begin{algorithm}[h!]
+\caption{Exercise 3: Brute-Force Attack - Question 3}
+\begin{algorithmic}[1]
+\State $ATTACK2DES(m,c)$
+\State \textbf{Input:}  $m$, $n$, a $n2^{l}$bit storage $s$, $\{E_{k}(.)\}_{k\in \{0,1\}^{l}}$, $\{D_{k}(.)\}_{k\in \{0,1\}^{l}}$
+ 
+ \State $storage \gets \{\}$
+
+ \For  {i=1..l}
+ \State $s[E_{k[i]}(m)] = k[i]$
+ \EndFor
+ \For {j=1..l}
+ \State$c1 \gets D_{k[j]}(c)$
+ \If {$storage[c1]$}
+ 	 \State{\bfseries return} $storage[c1], k[j]$
+ \EndIf
+\EndFor
+   
+.
+\end{algorithmic}
+\end{algorithm}
+
+ 
+
+\subsection{}
+Given a pair $(m, c)$, an attack can use the $n 2^{l}$ memory space in the following way: search through all the keys $k_{1}$ and for each $k_{1}$, compute $c_{1}=En_{k_{1}}(m)$ and apply the procedure $ATTACK2DES$ of the previous question to $c1$ and $c$. There are at most $2^{l}$ for loops and each iteration requires one encryption and one call to $ATTACK2DES$, so $O(2^{l})$ encryptions and $O(2^{l})$ decryptions. 
+Therefore the total running time is $O(n2^{2l})$.  
+
+
+\begin{algorithm}[h!]
+\caption{Exercise 3: Brute-Force Attack - Question 4}
+\begin{algorithmic}[1]
+\State $ATTACK3DES(m, c)$
+\State \textbf{Input:}  $m$, $n$, a $n2^{l}$bit storage $s$, $\{E_{k}(.)\}_{k\in \{0,1\}^{l}}$, $\{D_{k}(.)\}_{k\in \{0,1\}^{l}}$
+ 
+
+ \For  {i=1..l}
+ \State $c1\gets E_{k[i]}(m)$.
+ \State $k\gets ATTACK2DES(c1, c)$
+ \If {$k$ is not None}
+ 	 \State{\bfseries return} $k_[i], k[1], k[2]$
+ \EndIf
+\EndFor
+   
+.
+\end{algorithmic}
+\end{algorithm}
+
+\section{Exercise 4}
+\subsection{}
+The adversary first sends a message $m$ with bit $0$ only and receives a cyphertext $c$. Then he sends two messages $m_{0}=m$ and $m_{1}=11$. The challenger returns $c_{b}$. If $c_{b}=c$, the adversary returns $b=0$; otherwise he returns $b=1$. The adversary distinguishes $b=0$ from $b=1$ with probability $1$, since $m$ and $m_{0}$ will be encrypted to the same cyphertext $m \oplus F_{k}(m)$, while $m_{1}$ encrypts to $m_{1}+F_{k}(m_{1})\neq m \oplus F_{k}(m)$.
+
+\subsection{}
+The adversary first sends one message $m$ with bit zero only. He receives a cyphertext $c=r||(H(r) \oplus m \oplus k)$. He takes the last $n$ bits of $c$ and compute $h = (H(r) \oplus m \oplus k) \oplus m = H(r)\oplus k$ and then, deduce the key $k$ as $k=h \oplus H(r)$. Then, the adversary sends two messages $m_{0}\neq m_{1}$. When receiving $c_{b}=r^{'} ||c_{2b}$, if $c_{2b}\oplus H(r^{'})\oplus k = m_{o}$, he returns $b=0$; otherwise, he returns $b=1$. The adversary distinguishes $b=0$ from $b=1$ with probability $1$, since he has obtained the key $k$ in the first phase. 
+
+\section{Exercise 5}
+
+\subsection{}
+This is a valid block cypher: for each $k\{0,1\}^{2}$ (i.e. each row), there is no repeat along the row and there are exactly $2^{3}$ columns, so the row represents a permutation from $\{0,1\}^{3}$ to $\{0,1\}^{3}$. 
+
+\subsection{}
+This is a valid block cypher since for each $k$ the identity function $E_{k}(x)=x$ is a permutation.
+
+\subsection{}
+For each $k\in \{0,1\}^{n}$, $E_{k}^{''}$ is a one-to-one function: first, for $x\neq y$, $E_{k}^{''}(x) = E_{k}^{''}(y)$ implies that $\overline{x} = \overline{y}$ and thus that $x=y$. Moreover, for $y\in \{0,1\}$, $y= E_{k}^{''}(k\oplus \overline{y})$, so $E_{k}^{''}$ is onto. Therefore, for $k\in \{0,1\}^{n}$ $E_{k}^{''}$ is a permutation and $E^{''}$ is valid block cypher. 
+
+\subsection{}
+If a distinguisher queries $x_{1}$ and $x_{2}\neq x_{1}$ from an oracle $E^{'}_{k}$ for some secret key $k$ , he gets $x_{1}$ and $x_{2}$ respectively which would happen with negligible probability if $E_{k}$ was randomly drawn from the set of all possible permutations of $\{0, 1\}^{n}$. Therefore, $E_{k}^{'}$ is not a secure block cypher.
+
+\bigskip
+Similarly, by querying $x_{1}$ and $x_{2}\neq x_{1}$ from the challenger, , a distinguisher would obtain $y_{1}$ and $y_{2}$ and compute $y = y_{1}\oplus y_{2}$. If $y= x_{1}\oplus x_{2}$, the distinguisher returns $1$ (i.e. the challenger uses $E_{k}^{''}$ for some secret key $k$); otherwise, the distinguisher returns $0$ (the challenger uses a permutation randomly drawn from all permutations of $\{0, 1\}^{n}$). Since $y= x_{1}\oplus x_{2}$ happens with negligible probability with a random permutation, the distinguisher will win with non-negligible probability. 
 
 \end{document}

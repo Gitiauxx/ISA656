@@ -1,0 +1,8 @@
+ECB Writeup
+++++++++++++++++++++++++++++
+The adversary first sends a message m=00 and receives a cyphertext c.
+Then, he sends a message m0=m and m1=11. He receives a cyphertext c_b. 
+If c_b = c, he outputs b=0; otherwise, he outputs b=1.
+
+The adversary distinguish m1 and m0 with probability 1 because 
+if b=0,  c_b = m0 XOR f(m0) = m XOR f(m) = c.
