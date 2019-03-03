@@ -1,0 +1,8 @@
+"""
+col1 = open("col11", 'r').read()
+col2 = open("col22", 'r').read()
+
+if blob == col1:
+    print("I come in peace.")
+else:
+    print("Prepare to be destroyed!")
