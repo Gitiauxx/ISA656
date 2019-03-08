@@ -1,0 +1,8 @@
+part2
+----------------------------------------------
+1. The message is "attack at dawn"
+
+2.To prevent the previous attack, the messenger can add some random bits to the message:
+(1) It will increase the message space since the attacker will not know the random bits (with k random bits,
+the message space is 3 * 2**k)
+(2) It will make the message longer and protect against small plaintext attacks (see next question)

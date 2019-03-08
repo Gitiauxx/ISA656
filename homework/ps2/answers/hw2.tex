@@ -1,0 +1,96 @@
+\documentclass{article}
+
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\usepackage{subcaption}
+\usepackage{gensymb}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,url,array}
+\usepackage{enumerate}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\newcommand{\mathbbm}[1]{\text{\usefont{U}{bbm}{m}{n}#1}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thmt*}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{prop}[thm]{Proposition}
+\pgfplotsset{compat=1.15}
+
+\newtheorem{defn}{Definition}[section]
+\title{Homework 2 -- Xavier Gitiaux}
+\author{}
+\date{March 2019}
+
+\begin{document}
+\maketitle
+
+\section{Exercise 1}
+\subsection{Question 1}
+The customer cannot compute $x$ since it can only hash $m_{i}$ and not $m_{j}$ for $i\neq j$.  Therefore, to verify whether $m_{i}$ was signed, she needs a string $s_{1i}=h(m_{1})||...||h(m_{i-1})$ and $s_{2i}=h(m_{i+1})||...||h(m_{10})$. Then she would be able to compute $h(m_{i})$, insert it between $s_{1i}$  and $s_{2i}$ hash $H(s_{1i}||h(m_{i})||s_{2i})$ as $x^{'}$ and check whether $Sign_{pk}( x^{'})=s$. 
+
+\subsection{Question 2}
+To trick the customer, the company would have to forge a $x^{'}=H(h^{'})$ ($h\equiv H(m_{1}^{'})||...||H(m_{10}^{'})$) such that $x=x^{'}$ but either with $H(m_{i}) = H(m_{i}^{'})$ and $h=h^{'}$ or with $H(m_{i}) \neq H(m_{i}^{'})$ and $h\neq h^{'}$. In the former case, $m_{i}$ and $m_{i}^{'}$ will be a collision of $H$; in the latter case, $h$ and $h^{'}$ will be a collision of $H$. Both cases violate the collision-resistance assumption of $H$.
+
+\subsection{Question 3}
+The company signs $10$ messages at a time so in a second, it proceeds $100$ messages since each signature takes $0.1s$. Without its new scheme, the company will only proceed $10$ messages per second.
+
+\subsection{Question 4}
+To each customer $i$, the company sends $x$ and the $9$ hashes of $m_{j}$ for $j\neq i$. Therefore, it sends $320$ bytes of additional information.
+
+\subsection{Question 5}
+We could use a Merkle binary hash tree with messages $m_{1}, ..., m_{K}$ as leaves (where $K$ will be computed below). To each customer $i$, the company sends $m_{i}$, the hash of $m_{i}$'s sibling and of sibling of $m_{i}$'s parent and so on to the root. For a tree with $K$ leaves, the number of hashes that have to be included to what is sent to the customer is equal to the depth of the tree $log(K)$, so the total number of bytes is $32 * log(K)$. If the company needs $0.1s$ to sign and if they want to proceed $10^{7}$ messages per second, it means that in a second they can sign at most $10$ hashes with $10^{6}$ messages each. Therefore $K=10^{6}$ and the number of bytes transferred to each customer is $32 * log(10^{6})\sim 638 < 1000$.   
+
+
+\section{Exercise 2}
+
+\subsection{Question 1}
+Step 3
+\begin{itemize}
+	\item confirms to $B$ that he is talking to $A$ since only $A$ was able to decrypt $c_{2}$;
+	\item and it prevents a man-in-the-middle attack with an adversary intercepting $c_{2}$, replacing it with $c_{2}^{'}=Enc_{a}(N^{'})$ and forcing $A$ to use a wrong key $N_{a}\oplus N^{'}$. $B$  would know if this type of attack happens since $c_{3}$ would not decrypt to $N_{b}$.  
+\end{itemize}
+
+\subsection{Question 2}
+\begin{itemize}
+\item Upon receiving $c_{1}=Enc_{pk_{P}}(A, N_{a})$, $P$ decrypts with his private key $sk_{P}$ and gets $(A, N_{a})$, which he encrypts using $B$'s public key: $c_{1}^{'}=Enc_{pk_{b}}(A, N_{a})$. \item $P$ sends $c_{1}^{'}$ to $B$ who decrypts it and thinks he is talking to $A$.
+\item $B$ encrypts $N_{b}, N_{a}$ with $A$'s public key $pk_{A}$ and send it to $A$: $c_{2}=Enc_{pk_{A}}(N_{b}, N_{a})$.
+\item $P$  intercepts $c_{2}$ and sends it to $A$, who thinks it is coming from $P$. Therefore, $A$ will encrypt $N_{b}$ with $P$'s public key and sends $c_{3}=Enc_{pk_{P}}(N_{b})$ to $P$. 
+\item $P$ decrypts $c_{3}$ with his private key $sk_{P}$ and re-encrypt it with $B$'s public key: $c_{3}^{'}=Enc_{pk_{B}}(N_{b})$. 
+\item $B$ receives $c_{3}^{'}$ and decrypts. Since he gets the nonce he sends, he thinks that he is talking to $A$ and encrypts his message with the key $N_{a}\oplus N_{b}$.
+\item $P$ has both nonces $N_{a}$ and $N_{b}$. Therefore, he can communicate with $B$ as if he were $A$.
+\end{itemize}
+
+\subsection{Question 3}
+In Step 2, $B$ should encrypt $(B, N_{a}, N_{b})$ with $A$'s public key. $P$ cannot alter this message since he does not have $A$'s private key. But if he sends it to $A$ as a response to the initial message $c_{1}$ $A$ sends to $P$, $A$ will know that $N_{b}$ was not produced by $P$ but by $B$ and should abort the protocol ($A$ is expecting $Enc_{pk_{A}}(P, N_{a}, N_{b})$. 
+
+
+\end{document}

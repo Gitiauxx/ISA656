@@ -1,0 +1,6 @@
+GITIAUX: part3
+----------------------------------------------
+1. The message is "@8pm"
+
+2. The issue with small plaintexts is that m**3 < n, so m**(1/3) over the set of integers will  decrypt the message.
+Padding will prevent the previous attack by making sure that m ** 3 > n. 

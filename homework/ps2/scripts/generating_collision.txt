@@ -1,4 +1,4 @@
-generating_collision.txt
+GITIAUX: generating_collision.txt
 -----------------------------------------------
 (1) It took 9.49 s to find  a generating_collision
 (2) file1 is:

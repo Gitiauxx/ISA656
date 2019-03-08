@@ -1,0 +1,21 @@
+
+GITIAUX: goodEvil.txt
+-------------------------------
+From fastcoll, I get a collision col1 and col2 that starts with prefix and hash to the same value 
+5c2c48de67048ad8e0cb44b3e69c9316
+Then I append to both col1 and col2 the following lines to produce good.py and evil.py
+
+"""
+from hashlib import sha256
+b = sha256(blob).hexdigest()
+
+if (b == "3c3c442f67804e50bf8c784835e01dfdf6d17653c4db66b7d07176ce755aeecd"):
+    print "I come in peace."
+elif (b == "bdf62f1db8ddb955fb1ee27892685da186869fc2c4bbf476a1d1d332e56902ec"):
+    print "Prepare to be destroyed!"
+
+In suffix the first two lines hash the blob in col1 and col2 (to avoid to have to deal with strange binary format that throws Python off)
+The next four lines compare the hash value of blob to one obtained from the hash of blob in col1 and the hash of blob in col2.
+
+Both good.py and evil.py have the same md5 hash value c8e5feb946fbd95501da125a03390e9a. This is because
+prefix hash to the same value and suffix is the same for both programs. 

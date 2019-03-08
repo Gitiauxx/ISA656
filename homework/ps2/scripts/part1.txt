@@ -1,4 +1,4 @@
-part1.txt
+GITIAUX: part1.txt
 -------------------------------------
 (1) The hash of ms = m||padding||x is e1ca9db8eae1b8cbfacc63de828af6d0 and is the same whether we use directly md5(ms) or 
 h.md5(state=md5(m)) and h.update()
