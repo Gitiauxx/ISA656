@@ -1,0 +1,122 @@
+\documentclass{article}
+
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\usepackage{subcaption}
+\usepackage{gensymb}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,url,array}
+\usepackage{enumerate}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\newcommand{\mathbbm}[1]{\text{\usefont{U}{bbm}{m}{n}#1}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thmt*}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{prop}[thm]{Proposition}
+\pgfplotsset{compat=1.15}
+
+\newtheorem{defn}{Definition}[section]
+\title{Homework 3 -- Xavier Gitiaux}
+\author{}
+\date{March 2019}
+
+\begin{document}
+\maketitle
+
+\section{Exercise 1}
+\subsection{Question 1}
+ The attacker can proceed as follows:
+ \begin{itemize}
+ 	\item Relay the "hello" message from the client to the server
+ 	\item Relay the server's answer (certificate) to the client
+ 	\item Intercept the cypher $c=Enc_{pke}(K, pk)$, discards it and replace it by $c^{'}=Enc_{pke}(K^{'}, pk)$, $K\neq K$.
+ \end{itemize}
+The server would accept $c^{'}$ thinking it comes from the client, decrypts it and uses to communicate with the client.
+
+\subsection{Question 2}
+Regardless of the attack, the server never knows to whom he is talking to, since the client does not authenticate himself. Therefore, after the handshake protocol, the server should never assume the identity of the client. 
+
+
+
+
+\section{Exercise 2}
+The three-party Diffie Hellman protocol will work as follows:
+\begin{itemize}
+	\item Alice takes a random number $a$ (private key) and sends to Bob and Charlie $A =g^{a} mod(p)$,  $p$ is a large prime number and $g$ is a generator of $\mathbb{Z}p$ (publicly known).
+	\item Bob takes a random number $b$ (private key) and sends to Bob and Charlie $B =g^{b} mod(p)$.
+	\item Charlie takes a random number $c$ (private key) and sends to Bob and Charlie $C =g^{c} mod(p)$.
+	\item Alice computes $K_{A}= (BC)^{a}mod(p)$; Bob computes $K_{B}= (AC)^{b}mod(p)$; Charlie computes $K_{C}= (BA)^{c}mod(p)$. Note that $K_{A}=K_{B}=K_{C}=g^{abc}mod(p)\equiv K$. $K$ is the shared private key. 
+\end{itemize}
+
+\section{Question 3}
+
+\subsection{Question 1}
+The protocol guarantees that a user is authenticated at any site on campus without having to login username and password when accessing each of the site. The advantage is that there is only one password/username (or its hash) to be stored securely by one trusted party, instead of having to trust each site to store securely users' passwords. That makes key management easier.
+
+\subsection{Question 2}
+A failure or an attack on the central sign-on facility will compromise the whole system: e.g. if an adversary gets the facility's secret key, it can let any unauthorized user use any site on campus.
+
+\subsection{Question 3}
+The malicious site $A$ when it obtains $u, sign(u)$ can use them as parameters in the standardized $HTTPS \; URL$ of site $B$ (e.g. $https://redirectsiteB//username=u\&signature=sign(u))$, which will believe that it is receiving a valid request from user $u$, since $verify(pk, u, sign(u))$ will return true. 
+
+\subsection{Question 4}
+We can modify the protocol so that:
+\begin{itemize}
+	 \item Upon receiving the user's request, a site will send the user, an identifier for site A and a nonce $n_{a}$ to the central facility that will send back a token $u||n_{a}||A, \; sign(u||n_{a}||A)$ to site A. 
+	 \item A would verify the token using the central facility public key: $verify(pk, u||n_{a}||A, \; sign(u||n_{a}||A))$
+	\end{itemize}
+With this modification, A cannot use the token it receives from the central facility to impersonate the user when talking to site B: when verifying the signature, site B expects to see B as an identifier, not A. And $A$ cannot forge the signature sent by the central facility. The nonce protects against replay attacks (avoid an attacker to intercept the token and uses it to the same site, pretending to be the user).
+
+\section{Practical Part}
+\subsection{Question 1}
+\begin{enumerate}[(a)]
+\item The rest of the requests are made via http protocol using cookies to authenticate the user:
+Since the data sent between the user and Facebook are not encrypted, an attacker could eavesdrop the communication and intercept the cookie.
+\item An attacker can eavesdrop the communication and intercept the cookie (which is not encrypted). He can then the same cookie to connect to Facebook, pretending to be the user himself. 
+\item The cookie should be sent only through a https protocol, using TLS to encrypt the communication.
+\item The user clicked on www.aljazeera.com, www.usatoday.com, sent three POST requests (likely message or text in Facebook).
+\end{enumerate}
+
+\subsection{Question 2}
+
+\begin{enumerate}[(a)]
+	\item "weblogin.umich.edu" 
+	\item 
+	\item See the list at the end of the homework.
+	\item Three cipher suites use RC4\textunderscore128 which has been proved to be insecure and one suite uses MD5 as a hash function (for which collisions can be found in few minutes, see previous homework).
+	\item TLS\textunderscore DHE\textunderscore RSA\textunderscore WITH \textunderscore AES\textunderscore 256\textunderscore CBC\textunderscore SHA.
+\end{enumerate}
+
+
+
+\end{document}
