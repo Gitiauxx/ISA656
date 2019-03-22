@@ -101,9 +101,13 @@ With this modification, A cannot use the token it receives from the central faci
 \subsection{Question 1}
 \begin{enumerate}[(a)]
 \item The rest of the requests are made via http protocol using cookies to authenticate the user:
-Since the data sent between the user and Facebook are not encrypted, an attacker could eavesdrop the communication and intercept the cookie.
-\item An attacker can eavesdrop the communication and intercept the cookie (which is not encrypted). He can then the same cookie to connect to Facebook, pretending to be the user himself. 
-\item The cookie should be sent only through a https protocol, using TLS to encrypt the communication.
+
+ $c\_user=100004451022564; datr=ME9yUFtsro9IZo9Bsvx-mEM1; fr=09xG7bUTaV3Praqud.AWUl8VnwVMipiKyhdelnR_ylYXM.BQck9L.mh.AWUmDU8q; lu=Rhm1BbpziSYpwQr9lOfxnanw; xs=61\%3ATYLvVr8P4xXmM\%3A0\%3A1349668683; sub=3; p=68; wd=1366x643;$
+
+ 
+Since after the handshake, the data sent between the user and Facebook is sent via http, an attacker could eavesdrop the communication and intercept the cookie.
+\item An attacker can eavesdrop the communication and intercept the cookie. He can then use the same cookie to connect to Facebook, pretending to be the user himself. 
+\item The cookie should be encrypted using the key the server and the client have agreed upon during the handshake.
 \item The user clicked on www.aljazeera.com, www.usatoday.com, sent three POST requests (likely message or text in Facebook).
 \end{enumerate}
 
@@ -111,11 +115,53 @@ Since the data sent between the user and Facebook are not encrypted, an attacker
 
 \begin{enumerate}[(a)]
 	\item "weblogin.umich.edu" 
-	\item 
+	\item The domain name can be hidden since the server sent its certificate (an eavedropper could intercept the certificate and use the certificate authority public key to read the certificate and figure out the domain name). 
 	\item See the list at the end of the homework.
 	\item Three cipher suites use RC4\textunderscore128 which has been proved to be insecure and one suite uses MD5 as a hash function (for which collisions can be found in few minutes, see previous homework).
 	\item TLS\textunderscore DHE\textunderscore RSA\textunderscore WITH \textunderscore AES\textunderscore 256\textunderscore CBC\textunderscore SHA.
 \end{enumerate}
+
+\begin{table}[h!]
+\begin{tabular}{l}
+Cipher Suite                                 \\
+TLS\_ECDHE\_ECDSA\_WITH\_AES\_256\_CBC\_SHA  \\
+TLS\_ECDHE\_RSA\_WITH\_AES\_256\_CBC\_SHA    \\
+TLS\_DHE\_RSA\_WITH\_CAMELLIA\_256\_CBC\_SHA \\
+TLS\_DHE\_DSS\_WITH\_CAMELLIA\_256\_CBC\_SHA \\
+TLS\_DHE\_RSA\_WITH\_AES\_256\_CBC\_SHA      \\
+TLS\_DHE\_DSS\_WITH\_AES\_256\_CBC\_SHA      \\
+TLS\_ECDH\_RSA\_WITH\_AES\_256\_CBC\_SHA     \\
+TLS\_ECDH\_ECDSA\_WITH\_AES\_256\_CBC\_SHA   \\
+TLS\_RSA\_WITH\_CAMELLIA\_256\_CBC\_SHA      \\
+TLS\_RSA\_WITH\_AES\_256\_CBC\_SHA           \\
+TLS\_ECDHE\_ECDSA\_WITH\_RC4\_128\_SHA       \\
+TLS\_ECDHE\_ECDSA\_WITH\_AES\_128\_CBC\_SHA  \\
+TLS\_ECDHE\_RSA\_WITH\_RC4\_128\_SHA         \\
+TLS\_ECDHE\_RSA\_WITH\_AES\_128\_CBC\_SHA    \\
+TLS\_DHE\_RSA\_WITH\_CAMELLIA\_128\_CBC\_SHA \\
+TLS\_DHE\_DSS\_WITH\_CAMELLIA\_128\_CBC\_SHA \\
+TLS\_DHE\_DSS\_WITH\_RC4\_128\_SHA           \\
+TLS\_DHE\_RSA\_WITH\_AES\_128\_CBC\_SHA      \\
+TLS\_DHE\_DSS\_WITH\_AES\_128\_CBC\_SHA      \\
+TLS\_ECDH\_RSA\_WITH\_RC4\_128\_SHA          \\
+TLS\_ECDH\_RSA\_WITH\_AES\_128\_CBC\_SHA     \\
+TLS\_ECDH\_ECDSA\_WITH\_RC4\_128\_SHA        \\
+TLS\_ECDH\_ECDSA\_WITH\_AES\_128\_CBC\_SHA   \\
+TLS\_RSA\_WITH\_SEED\_CBC\_SHA               \\
+TLS\_RSA\_WITH\_CAMELLIA\_128\_CBC\_SHA      \\
+TLS\_RSA\_WITH\_RC4\_128\_SHA                \\
+TLS\_RSA\_WITH\_RC4\_128\_MD5                \\
+TLS\_RSA\_WITH\_AES\_128\_CBC\_SHA           \\
+TLS\_ECDHE\_ECDSA\_WITH\_3DES\_EDE\_CBC\_SHA \\
+TLS\_ECDHE\_RSA\_WITH\_3DES\_EDE\_CBC\_SHA   \\
+TLS\_DHE\_RSA\_WITH\_3DES\_EDE\_CBC\_SHA     \\
+TLS\_DHE\_DSS\_WITH\_3DES\_EDE\_CBC\_SHA     \\
+TLS\_ECDH\_RSA\_WITH\_3DES\_EDE\_CBC\_SHA    \\
+TLS\_ECDH\_ECDSA\_WITH\_3DES\_EDE\_CBC\_SHA  \\
+SSL\_RSA\_FIPS\_WITH\_3DES\_EDE\_CBC\_SHA    \\
+TLS\_RSA\_WITH\_3DES\_EDE\_CBC\_SHA         
+\end{tabular}
+\end{table}
 
 
 
